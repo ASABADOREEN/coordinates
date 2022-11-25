@@ -1,13 +1,46 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native';
+import {Location, Permissions} from 'expo';
 
-export default function App() {
+export default class App extends React.Component {
+
+  state = {
+    location: {},
+    errorMessage: '',
+  };
+  
+  componentWillMount(){
+    this._getLocation();
+  }
+  
+  _getLocation = async () => {
+    const {status} = await Permissions.askAsnc(Permissions.LOCATION)
+
+    if(status !== 'granted') {
+      console.log('PERMISSION NOT GRANTED!');
+
+      this.setState({
+        errorMessage: 'PERMISSION NOOT GRANTED'
+      })
+    }
+
+    const userLocation = Location.getCurrentPositionAsync();
+
+    this.setState({
+      location
+    });
+  };
+  
+  
+  
+  render(){
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Text>{JSON.stringify(this.state.location)}</Text>
       <StatusBar style="auto" />
     </View>
   );
+}
 }
 
 const styles = StyleSheet.create({
